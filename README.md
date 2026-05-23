@@ -2,22 +2,23 @@
 
 > **🔗 Live Demo:** [https://kebunforge.vercel.app](https://kebunforge.vercel.app)
 
-KebunForge adalah game berkebun bergaya RPG yang menggabungkan simulasi berkebun dengan mekanik quest, crafting, leveling, dan leaderboard. Pemain memilih tipe kebun, menyelesaikan task untuk melawan hama, craft alat berkebun, dan membangun streak pertumbuhan harian.
+KebunForge is a gamified gardening RPG that combines farming simulation with quest mechanics, tool crafting, leveling, and leaderboards. Players choose a garden type, complete tasks to battle pests, craft gardening tools, and build daily growth streaks.
 
 ---
 
-## 📑 Daftar Isi
+## 📑 Table of Contents
 
 - [Tech Stack](#-tech-stack)
-- [Arsitektur & Infrastruktur](#-arsitektur--infrastruktur)
-- [Struktur Project](#-struktur-project)
+- [Infrastructure & Architecture](#-infrastructure--architecture)
+- [Project Structure](#-project-structure)
 - [Data Model & State Management](#-data-model--state-management)
-- [Halaman & Fitur](#-halaman--fitur)
-- [Sistem Game](#-sistem-game)
+- [Pages & Features](#-pages--features)
+- [Game Systems](#-game-systems)
 - [Theme & Styling](#-theme--styling)
 - [Getting Started](#-getting-started)
 - [Deployment](#-deployment)
-- [Navigasi & User Flow](#-navigasi--user-flow)
+- [Navigation & User Flow](#-navigation--user-flow)
+- [Technical Notes](#-technical-notes)
 
 ---
 
@@ -34,11 +35,11 @@ KebunForge adalah game berkebun bergaya RPG yang menggabungkan simulasi berkebun
 | **CSS Processing** | PostCSS + Autoprefixer | 8.x / 10.x | Tailwind compilation |
 | **Deployment** | Vercel | — | Zero-config Next.js hosting |
 
-> **Tidak ada backend.** Semua data adalah mock/in-memory via Zustand. Tidak ada database, tidak ada API routes, tidak ada autentikasi nyata. Dirancang sebagai demo frontend yang fully client-side.
+> **No backend.** All data is mock/in-memory via Zustand. No database, no API routes, no real authentication. Designed as a fully client-side frontend demo.
 
 ---
 
-## 🏗 Arsitektur & Infrastruktur
+## 🏗 Infrastructure & Architecture
 
 ### High-Level Architecture
 
@@ -68,9 +69,9 @@ KebunForge adalah game berkebun bergaya RPG yang menggabungkan simulasi berkebun
 
 ### Rendering Strategy
 
-- **Static (SSG):** `/`, `/auth`, `/onboarding`, `/dashboard`, `/map`, `/activity`, `/garden`, `/inventory`, `/leaderboard`, `/rewards`, `/progress`, `/devices` — semua di-pre-render sebagai static HTML
+- **Static (SSG):** `/`, `/auth`, `/onboarding`, `/dashboard`, `/map`, `/activity`, `/garden`, `/inventory`, `/leaderboard`, `/rewards`, `/progress`, `/devices` — all pre-rendered as static HTML
 - **Dynamic (SSR):** `/quest/[id]` — server-rendered on demand (parameterized route)
-- **Client Hydration:** Semua page menggunakan `'use client'` directive, interaksi sepenuhnya client-side
+- **Client Hydration:** All pages use the `'use client'` directive; all interactivity is client-side
 
 ### State Flow
 
@@ -80,11 +81,11 @@ User Action → Component → Zustand Store (set) → Re-render → UI Update
                   └────────── useKebunStore ────────────┘
 ```
 
-Tidak ada async calls, tidak ada loading states, tidak ada error handling untuk network. Semua data tersedia instan dari store.
+No async calls, no loading states, no network error handling. All data is instantly available from the store.
 
 ---
 
-## 📁 Struktur Project
+## 📁 Project Structure
 
 ```
 kebunforge/
@@ -98,7 +99,7 @@ kebunforge/
 │   │   └── page.tsx              # Sign in form (name + email, mock auth)
 │   │
 │   ├── onboarding/
-│   │   └── page.tsx              # 3-step wizard: pilih garden type → devices → ready
+│   │   └── page.tsx              # 3-step wizard: garden type → devices → ready
 │   │
 │   ├── dashboard/
 │   │   └── page.tsx              # Main hub: 4 stat cards, recent tasks, devices
@@ -111,7 +112,7 @@ kebunforge/
 │   │       └── page.tsx          # Quest detail: 3-phase (info → battle → victory)
 │   │
 │   ├── activity/
-│   │   └── page.tsx              # Free guided activities: composting, pruning, dll
+│   │   └── page.tsx              # Free guided activities: composting, pruning, etc.
 │   │
 │   ├── garden/
 │   │   └── page.tsx              # Garden health: soil pH, sunlight, water charts
@@ -123,7 +124,7 @@ kebunforge/
 │   │   └── page.tsx              # Weekly rankings: podium top 3 + list
 │   │
 │   ├── rewards/
-│   │   └── page.tsx              # HP shop: beli item dengan Harvest Points
+│   │   └── page.tsx              # HP shop: purchase items with Harvest Points
 │   │
 │   ├── progress/
 │   │   └── page.tsx              # Growth charts, harvest counter, streak calendar
@@ -134,21 +135,21 @@ kebunforge/
 ├── components/                   # Shared reusable components
 │   ├── NavBar.tsx                # Sidebar (desktop, w-20) + bottom tab bar (mobile)
 │   ├── TaskCard.tsx              # Task card: icon, difficulty badge, rewards
-│   ├── StreakBadge.tsx           # Growth streak counter dengan bloom animation
+│   ├── StreakBadge.tsx           # Growth streak counter with bloom animation
 │   ├── HPBar.tsx                 # Level indicator + Harvest Points progress bar
 │   └── DeviceStatus.tsx          # Device connection status badges
 │
 ├── lib/
-│   └── store.ts                  # Zustand global store (semua state app)
+│   └── store.ts                  # Zustand global store (all app state)
 │
-├── public/                       # Static assets (favicon, dll)
+├── public/                       # Static assets (favicon, etc.)
 │
 ├── next.config.mjs               # Next.js config (minimal)
 ├── tailwind.config.ts            # Tailwind theme: custom colors, animations
 ├── postcss.config.mjs            # PostCSS: tailwindcss + autoprefixer
 ├── tsconfig.json                 # TypeScript config
 ├── package.json                  # Dependencies & scripts
-└── README.md                     # ← Kamu di sini
+└── README.md                     # ← You are here
 ```
 
 ---
@@ -157,25 +158,25 @@ kebunforge/
 
 ### Zustand Store (`lib/store.ts`)
 
-Seluruh state aplikasi disimpan dalam satu Zustand store bernama `useKebunStore`. Tidak ada persistence (data reset saat refresh).
+All application state lives in a single Zustand store called `useKebunStore`. There is no persistence — data resets on page refresh.
 
 ### Types & Interfaces
 
 ```typescript
-// Garden Types (4 pilihan di onboarding)
+// Garden Types (4 choices during onboarding)
 type GardenType = "tropical" | "desert" | "aquatic" | "forest";
 
-// Activity Types (tipe task/quest)
+// Activity Types (task/quest categories)
 type ActivityType = "planting" | "harvesting" | "weeding" | "watering"
                   | "composting" | "pruning" | "mulching";
 
 // Difficulty Tiers
 type Difficulty = "starter" | "easy" | "medium" | "hard" | "master";
 
-// Material Types (resources dari quest)
+// Material Types (resources earned from quests)
 type MaterialType = "seed" | "nutrient" | "compost" | "rare_seed" | "golden_fertilizer";
 
-// Tool Slots (6 slot equipment)
+// Tool Slots (6 equipment slots)
 type ToolSlot = "hand" | "soil" | "water" | "cut" | "protect" | "fertilizer";
 
 // Rarity Tiers
@@ -186,20 +187,20 @@ type Rarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
 
 ```typescript
 interface User {
-  userName: string;        // Nama pemain
+  userName: string;        // Player name
   email: string;           // Email (mock)
-  gardenType: GardenType;  // Tipe kebun pilihan
+  gardenType: GardenType;  // Selected garden type
   level: number;           // Level = floor(harvestPoints / 500) + 1
   harvestPoints: number;   // XP equivalent
-  streak: number;          // Harian streak counter
+  streak: number;          // Daily streak counter
 }
 
 interface GardenStats {
-  totalGrowth: number;     // Total growth points
-  totalHarvests: number;   // Jumlah harvest
-  plantsAlive: number;     // Tanaman hidup
+  totalGrowth: number;     // Total growth points accumulated
+  totalHarvests: number;   // Number of harvests completed
+  plantsAlive: number;     // Currently living plants
   soilHealth: number;      // 0-100%
-  sunlightHours: number;   // Jam sinar matahari
+  sunlightHours: number;   // Hours of sunlight
   waterLevel: number;      // 0-100%
 }
 
@@ -257,36 +258,36 @@ interface RewardItem {
 
 | Action | Description |
 |--------|------------|
-| `setUser(data)` | Set user info dari auth/onboarding |
-| `completeTask(taskId)` | Tandai task selesai, tambah HP + materials |
-| `craftTool(toolId)` | Kurangi materials, buka tool |
-| `equipTool(toolId)` | Equip tool ke slot |
+| `setUser(data)` | Set user info from auth/onboarding |
+| `completeTask(taskId)` | Mark task complete, add HP + materials |
+| `craftTool(toolId)` | Deduct materials, unlock tool |
+| `equipTool(toolId)` | Equip tool to slot |
 | `toggleDevice(deviceId)` | Connect/disconnect smart device |
-| `buyReward(rewardId)` | Beli item dari reward shop |
+| `buyReward(rewardId)` | Purchase item from reward shop |
 | `updateStreak()` | Increment daily streak |
 
 ---
 
-## 📄 Halaman & Fitur
+## 📄 Pages & Features
 
 ### 1. Landing Page (`/`)
-- Hero section dengan tagline "Cultivate Your Legend"
-- 4 garden type cards (Tropical, Desert, Aquatic, Forest) dengan preview stats
-- Fitur highlights (6 kartu)
-- CTA ke `/auth`
+- Hero section with tagline "Cultivate Your Legend"
+- 4 garden type cards (Tropical, Desert, Aquatic, Forest) with stat previews
+- Feature highlights (6 cards)
+- CTA to `/auth`
 
 ### 2. Auth (`/auth`)
-- Form: nama + email
-- Mock authentication → set user state → redirect ke `/onboarding`
+- Form: name + email
+- Mock authentication → sets user state → redirects to `/onboarding`
 
 ### 3. Onboarding (`/onboarding`)
-- **Step 1:** Pilih Garden Type (4 opsi dengan deskripsi + stat bonuses)
-- **Step 2:** Connect Devices (opsional, skip allowed)
-- **Step 3:** Confirmation → redirect ke `/dashboard`
+- **Step 1:** Choose Garden Type (4 options with descriptions + stat bonuses)
+- **Step 2:** Connect Devices (optional, skippable)
+- **Step 3:** Confirmation → redirects to `/dashboard`
 
 ### 4. Dashboard (`/dashboard`)
 - 4 stat cards: Plants Alive, Soil Health, Sunlight Hours, Water Level
-- Recent tasks (3 terakhir)
+- Recent tasks (last 3)
 - Connected devices status
 - Growth streak badge
 - Quick action buttons
@@ -294,21 +295,21 @@ interface RewardItem {
 ### 5. Map / Task Board (`/map`)
 - Filter tabs by ActivityType
 - Grid of TaskCards
-- Setiap card: icon, title, difficulty badge, HP reward, material reward
-- Click → navigasi ke `/quest/[id]`
+- Each card: icon, title, difficulty badge, HP reward, material reward
+- Click → navigates to `/quest/[id]`
 
 ### 6. Quest Detail (`/quest/[id]`)
-- **Phase 1 — Info:** Detail task, enemy info, rewards preview
-- **Phase 2 — Battle:** Animasi "planting battle" (growing vs pest)
+- **Phase 1 — Info:** Task details, enemy info, rewards preview
+- **Phase 2 — Battle:** Animated "planting battle" (growing vs. pest)
 - **Phase 3 — Victory:** Reward summary, HP gained, materials earned
-- AnimatePresence transitions antar phase
+- AnimatePresence transitions between phases
 
 ### 7. Activities (`/activity`)
 - Guided garden activities: composting, pruning, mulching, watering
-- Setiap activity: durasi, instruksi step-by-step, growth reward
+- Each activity: duration, step-by-step instructions, growth reward
 
 ### 8. Garden Health (`/garden`)
-- Line chart: soil pH trend
+- Line chart: soil pH trend over time
 - Bar chart: sunlight hours & water level
 - Overall garden health score
 - MiMo AI garden advisor placeholder
@@ -321,17 +322,17 @@ interface RewardItem {
 - Rarity color coding
 
 ### 10. Leaderboard (`/leaderboard`)
-- Podium: top 3 dengan avatar, nama, HP
-- Ranked list: posisi 4-10
+- Podium: top 3 with avatar, name, HP
+- Ranked list: positions 4–10
 - Weekly reset indicator
 
 ### 11. Rewards (`/rewards`)
-- Shop grid: items purchasable dengan HP
-- Items: seed packs, tool blueprints, cosmetics, boost
-- Buy button disabled jika HP tidak cukup
+- Shop grid: items purchasable with HP
+- Items: seed packs, tool blueprints, cosmetics, boosts
+- Buy button disabled when HP insufficient
 
 ### 12. Progress (`/progress`)
-- Stat bars: strength, stamina, agility (mapped ke gardening skills)
+- Stat bars: strength, stamina, agility (mapped to gardening skills)
 - Harvest history chart
 - Growth streak calendar view
 - Level progression
@@ -347,46 +348,46 @@ interface RewardItem {
 
 ---
 
-## ⚔️ Sistem Game
+## ⚔️ Game Systems
 
 ### Level System
 ```
 Level = floor(HarvestPoints / 500) + 1
 ```
-- Level 1: 0-499 HP
-- Level 2: 500-999 HP
-- Level 3: 1000-1499 HP
-- dst.
+- Level 1: 0–499 HP
+- Level 2: 500–999 HP
+- Level 3: 1000–1499 HP
+- And so on...
 
 ### Garden Types & Bonuses
 
 | Type | Bonus | Description |
 |------|-------|------------|
-| 🌴 Tropical | Growth +20% | Kebun tropis, tanaman tumbuh cepat |
-| 🏜️ Desert | Protection +20% | Tahan hama, konservasi air |
-| 🌊 Aquatic | Harvest +20% | Tanaman air, hasil melimpah |
-| 🌲 Forest | Balanced +10% | Ekosistem hutan, semua stat bonus |
+| 🌴 Tropical | Growth +20% | Tropical garden, fast plant growth |
+| 🏜️ Desert | Protection +20% | Pest resistant, water conservation |
+| 🌊 Aquatic | Harvest +20% | Water plants, abundant yields |
+| 🌲 Forest | Balanced +10% | Forest ecosystem, all-stat bonus |
 
 ### Difficulty Tiers
 
 | Tier | Enemy | HP Reward | Material Drop |
 |------|-------|-----------|--------------|
-| ⭐ Starter | Aphids | 50 HP | Seed x2 |
-| ⭐⭐ Easy | Locusts | 100 HP | Seed x3, Nutrient x1 |
-| ⭐⭐⭐ Medium | Drought | 200 HP | Compost x2, Rare Seed x1 |
-| ⭐⭐⭐⭐ Hard | Weeds | 350 HP | Rare Seed x2, Nutrient x3 |
-| ⭐⭐⭐⭐⭐ Master | Frost Dragon | 500 HP | Golden Fertilizer x1 |
+| ⭐ Starter | Aphids | 50 HP | Seed ×2 |
+| ⭐⭐ Easy | Locusts | 100 HP | Seed ×3, Nutrient ×1 |
+| ⭐⭐⭐ Medium | Drought | 200 HP | Compost ×2, Rare Seed ×1 |
+| ⭐⭐⭐⭐ Hard | Weeds | 350 HP | Rare Seed ×2, Nutrient ×3 |
+| ⭐⭐⭐⭐⭐ Master | Frost Dragon | 500 HP | Golden Fertilizer ×1 |
 
 ### Crafting System
 
-Tools membutuhkan material dari quest completion:
+Tools require materials earned from quest completion:
 
 ```
-Recipe example:
+Recipe Example:
   Golden Watering Can (Epic, water slot)
-  ├── Rare Seed x3
-  ├── Compost x5
-  └── Golden Fertilizer x1
+  ├── Rare Seed ×3
+  ├── Compost ×5
+  └── Golden Fertilizer ×1
   → Stats: Growth +15, Harvest +10, Protection +5
 ```
 
@@ -426,7 +427,7 @@ Recipe example:
 --glow-amber: 0 0 20px rgba(245, 158, 11, 0.3);
 ```
 
-### Custom CSS Utilities (globals.css)
+### Custom CSS Utilities (`globals.css`)
 
 | Class | Description |
 |-------|------------|
@@ -438,8 +439,8 @@ Recipe example:
 ### Responsive Breakpoints
 
 - **Mobile:** Bottom tab navigation (5 items), stacked layouts
-- **Desktop (md+):** Left sidebar (w-80), grid layouts (2-3 columns)
-- **Large (lg+):** 3-4 column grids
+- **Desktop (md+):** Left sidebar (w-80), grid layouts (2–3 columns)
+- **Large (lg+):** 3–4 column grids
 
 ---
 
@@ -453,23 +454,23 @@ Recipe example:
 ### Install & Run
 
 ```bash
-# Clone
+# Clone the repository
 git clone https://github.com/sepoakundua-oss/kebunforge.git
 cd kebunforge
 
 # Install dependencies
 npm install
 
-# Development server
+# Start development server
 npm run dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Build & Production
+### Build for Production
 
 ```bash
-# Build untuk production
+# Build optimized production bundle
 npm run build
 
 # Start production server
@@ -480,7 +481,7 @@ npm start
 
 | Script | Command | Description |
 |--------|---------|------------|
-| `dev` | `next dev` | Development server dengan hot reload |
+| `dev` | `next dev` | Development server with hot reload |
 | `build` | `next build` | Production build (SSG + SSR) |
 | `start` | `next start` | Start production server |
 | `lint` | `next lint` | ESLint check |
@@ -491,14 +492,14 @@ npm start
 
 ### Vercel (Recommended)
 
-Project sudah di-deploy ke Vercel:
+The project is deployed to Vercel:
 
 ```bash
-# Deploy manual
+# Deploy manually
 npx vercel --prod
 
-# Atau via Vercel Dashboard:
-# 1. Import repo dari GitHub
+# Or via Vercel Dashboard:
+# 1. Import repository from GitHub
 # 2. Framework: Next.js (auto-detected)
 # 3. Deploy
 ```
@@ -511,18 +512,18 @@ npx vercel --prod
 
 ---
 
-## 🔄 Navigasi & User Flow
+## 🔄 Navigation & User Flow
 
 ```
                     ┌──────────┐
                     │ Landing  │ (/)
-                    │  Page    │
+                    │   Page   │
                     └────┬─────┘
-                         │ "Mulai Berkebun"
+                         │ "Start Farming"
                          ▼
                     ┌──────────┐
                     │   Auth   │ (/auth)
-                    │  Sign In │
+                    │ Sign In  │
                     └────┬─────┘
                          │
                          ▼
@@ -564,11 +565,17 @@ npx vercel --prod
 
 ---
 
-## 📝 Catatan Teknis
+## 📝 Technical Notes
 
-- **No Backend:** Pure client-side SPA. Semua data mock di Zustand. Reset on refresh.
-- **No Real Auth:** Email/name form hanya set state, tidak ada validasi server.
-- **No Real Device Integration:** Smart devices adalah placeholder UI.
-- **MiMo AI:** Deskripsi di UI saja, tidak ada integrasi AI aktual.
-- **Responsive:** Desktop sidebar + mobile bottom bar, semua halaman fully responsive.
-- **Animations:** Framer Motion `fadeUp`, `stagger`, `AnimatePresence` untuk page transitions dan quest battle phases.
+- **No Backend:** Purely client-side SPA. All data is mock state in Zustand. Resets on refresh.
+- **No Real Auth:** Email/name form only sets state — no server-side validation.
+- **No Real Device Integration:** Smart devices are placeholder UI.
+- **MiMo AI:** Described in UI only — no actual AI integration.
+- **Responsive:** Desktop sidebar + mobile bottom bar; all pages are fully responsive.
+- **Animations:** Framer Motion `fadeUp`, `stagger`, and `AnimatePresence` for page transitions and quest battle phases.
+
+---
+
+## 📄 License
+
+MIT
