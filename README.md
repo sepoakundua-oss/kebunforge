@@ -1,5 +1,7 @@
 # 🌱 KebunForge - Garden RPG Adventure
 
+> **🔗 Live Demo:** [https://kebunforge.vercel.app](https://kebunforge.vercel.app)
+
 A gamified gardening game built with Next.js 14, TypeScript, Tailwind CSS, Zustand, and Framer Motion.
 
 ## Features
